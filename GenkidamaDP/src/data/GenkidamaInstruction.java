@@ -1,10 +1,12 @@
 package data;
 
-public class GenkidamaInstruction extends GenkidamaRemoteStoreable{
+import net.GenkidamaInstructionAbstract;
+import net.GenkidamaObjectType;
+
+public class GenkidamaInstruction extends GenkidamaInstructionAbstract{
 
 	public GenkidamaInstruction(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	

@@ -1,6 +1,9 @@
 package data;
 
-public class GenkidamaFile extends GenkidamaRemoteStoreable{
+import net.GenkidamaFileAbstract;
+
+
+public class GenkidamaFile extends GenkidamaFileAbstract{
 
 	public GenkidamaFile(String id) {
 		super(id);

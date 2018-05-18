@@ -1,12 +1,15 @@
 package device;
 
-import java.util.Set;
-
+import data.GenkidamaComputationSpec;
 import data.GenkidamaConstants;
 import data.GenkidamaFile;
 import data.GenkidamaInstruction;
 import data.GenkidamaLibrary;
-import data.GenkidamaParameter;
+import net.GenkidamaComputationSpecAbstract;
+import net.GenkidamaConstantsAbstract;
+import net.GenkidamaFileAbstract;
+import net.GenkidamaInstructionAbstract;
+import net.GenkidamaLibraryAbstract;
 import net.GenkidamaPacket;
 import net.GenkidamaPacketFactory;
 
@@ -16,54 +19,61 @@ public class ComputeDevice {
 	private RemoteIdentifiers remoteIdentifiers;
 	
 	
-	public void transmitConstants(GenkidamaConstants constants) {
+	public ComputeDevice() {
 		
-		if (constantIdentifiers.contains(constants.getIdentifier()))
-			throw new RuntimeException("Constant identifier already exists in compute device");
+		String[] defaultIdentifierCategories = new String[] {
+			"Constant",
+			"Instruction",
+			"File",
+			"Libary"
+		};
+		remoteIdentifiers = new RemoteIdentifiers(defaultIdentifierCategories);
+	}
+	
+	public void transmitConstants(GenkidamaConstantsAbstract constants) {
 		
-		GenkidamaPacket packet = GenkidamaPacketFactory.packetConstants(constants);
+		remoteIdentifiers.addIdentifier("Constant",constants.getIdentifier());
+		GenkidamaPacket packet = GenkidamaPacketFactory.packet(constants);
 		connection.sendPacket(packet);
-		constantIdentifiers.add(constants.getIdentifier());
+		
 		
 	}
 	
-	public void transmitInstruction(GenkidamaInstruction instruction) {
+	public void transmitInstruction(GenkidamaInstructionAbstract instruction) {
+	
+		remoteIdentifiers.addIdentifier("Instruction", instruction.getIdentifier());
 		
-		if (instructionIdentifiers.contains(instruction.getIdentifier()))
-			throw new RuntimeException("Instruction identifier already exists in compute device");
-		
-		GenkidamaPacket packet =  GenkidamaPacketFactory.packetInstruction(instruction);
+		GenkidamaPacket packet =  GenkidamaPacketFactory.packet(instruction);
 		connection.sendPacket(packet);
-		instructionIdentifiers.add(instruction.getIdentifier());
+		
 	}
 	
 	
 	
-	public void transmitFile(GenkidamaFile file) {
+	public void transmitFile(GenkidamaFileAbstract file) {
 		
-		if (fileIdentifiers.contains(file.getIdentifier()))
-			throw new RuntimeException("File identifier already exists in compute device");
+		remoteIdentifiers.addIdentifier("File", file.getIdentifier());
 		
-		GenkidamaPacket packet = GenkidamaPacketFactory.packetFile(file);
+		GenkidamaPacket packet = GenkidamaPacketFactory.packet(file);
 		connection.sendPacket(packet);
-		fileIdentifiers.add(file.getIdentifier());
+
 	}
 	
-	public void transmitLibrary(GenkidamaLibrary lib) {
+	public void transmitLibrary(GenkidamaLibraryAbstract lib) {
 		
-		if (libraryIdentifiers.contains(lib.getIdentifier()))
-			throw new RuntimeException("Library identifier already exists in compute device");
+		remoteIdentifiers.addIdentifier("Library", lib.getIdentifier());
 		
-		GenkidamaPacket packet = GenkidamaPacketFactory.packetLibrary(lib);
+		GenkidamaPacket packet = GenkidamaPacketFactory.packet(lib);
 		connection.sendPacket(packet);
-		libraryIdentifiers.add(lib.getIdentifier());
+		
 		
 	}
 	
 	
-	public void kickComputation(GenkidamaInstruction genkidamaInstruction, GenkidamaParameter parameter) {
+	public void kickComputation(GenkidamaComputationSpecAbstract genkidamaComputationSpec) {
 		
+		GenkidamaPacket packet = GenkidamaPacketFactory.packet(genkidamaComputationSpec);
+		connection.sendPacket(packet);
 	}
 	
-	public void 
 }

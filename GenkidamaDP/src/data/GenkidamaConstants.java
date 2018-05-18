@@ -1,10 +1,12 @@
 package data;
 
-public class GenkidamaConstants extends GenkidamaRemoteStoreable{
+import net.GenkidamaConstantsAbstract;
+
+public class GenkidamaConstants extends GenkidamaConstantsAbstract{
 
 	public GenkidamaConstants(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	

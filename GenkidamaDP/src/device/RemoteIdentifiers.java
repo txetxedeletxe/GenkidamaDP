@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import exception.IdentifierAlreadyExistsException;
+import exception.IdentifierDoesNotExistException;
 
 public class RemoteIdentifiers {
 
@@ -32,7 +33,7 @@ public class RemoteIdentifiers {
 	public void addIdentifier(String identifierCategory, String identifier) {
 		
 		if (!remoteIdentifiers.containsKey(identifierCategory))
-			throw new RuntimeException("Remote identifier category does not exist");
+			throw new RuntimeException("Remote identifier \"" + identifierCategory + "\" category does not exist");
 		
 		Set<String> set = remoteIdentifiers.get(identifierCategory);
 		
@@ -44,23 +45,48 @@ public class RemoteIdentifiers {
 	
 	public void deleteIdentifier(String identifierCategory, String identifier) {
 		
-		remoteIdentifiers.get(identifierCategory).remove(identifier);
+		if (!remoteIdentifiers.containsKey(identifierCategory))
+			throw new RuntimeException("Remote identifier \"" + identifierCategory + "\" category does not exist");
+		
+		Set<String> set = remoteIdentifiers.get(identifierCategory);
+		
+		if (!set.contains(identifier))
+			throw new IdentifierDoesNotExistException("The identifier \"" + identifier + " \" does not exist in"
+					+ " the category \"" + identifierCategory + "\".");
+		
+		
+		set.remove(identifier);
 	}
 	
 	public boolean containsIdentifier(String identifierCategory, String identifier) {
 		
-		return remoteIdentifiers.get(identifierCategory).contains(identifier);
+		if (!remoteIdentifiers.containsKey(identifierCategory))
+			throw new RuntimeException("Remote identifier \"" + identifierCategory + "\" category does not exist");
+		
+		Set<String> set = remoteIdentifiers.get(identifierCategory);
+		
+		return set.contains(identifier);
 	}
 	
 	public void addIdentifierCategory(String identifierCategory) {
+		
+		if (remoteIdentifiers.containsKey(identifierCategory))
+			throw new RuntimeException("Remote identifier \"" + identifierCategory + "\" category already exists");
+		
 		remoteIdentifiers.put(identifierCategory, new HashSet<String>());
 	}
 	
 	public void removeIdentifierCategory(String identifierCategory) {
+		
+		if (!remoteIdentifiers.containsKey(identifierCategory))
+			throw new RuntimeException("Remote identifier \"" + identifierCategory + "\" category does not exist");
+
+		
 		remoteIdentifiers.remove(identifierCategory);
 	}
 	
 	public boolean identifierCategoryExists(String identifierCategory) {
+		
 		return remoteIdentifiers.containsKey(identifierCategory);
 	}
 }
