@@ -1,5 +1,6 @@
-/device/
-/instruction/
-/net/
 /data/
+/device/
 /exception/
+/net/
+/transmitible/
+/uploadAndStore/

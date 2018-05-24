@@ -1,17 +1,11 @@
 package device;
 
-import data.GenkidamaComputationSpec;
-import data.GenkidamaConstants;
-import data.GenkidamaFile;
-import data.GenkidamaInstruction;
-import data.GenkidamaLibrary;
-import net.GenkidamaComputationSpecAbstract;
-import net.GenkidamaConstantsAbstract;
-import net.GenkidamaFileAbstract;
-import net.GenkidamaInstructionAbstract;
-import net.GenkidamaLibraryAbstract;
-import net.GenkidamaPacket;
-import net.GenkidamaPacketFactory;
+
+import transmitible.order.ComputationKick;
+import transmitible.uploadAndStore.GenkidamaConstants;
+import transmitible.uploadAndStore.GenkidamaFile;
+import transmitible.uploadAndStore.GenkidamaInstruction;
+import transmitible.uploadAndStore.GenkidamaLibrary;
 
 public class ComputeDevice {
 
@@ -30,16 +24,16 @@ public class ComputeDevice {
 		remoteIdentifiers = new RemoteIdentifiers(defaultIdentifierCategories);
 	}
 	
-	public void transmitConstants(GenkidamaConstantsAbstract constants) {
+	public void transmitConstants(GenkidamaConstants constants) {
 		
 		remoteIdentifiers.addIdentifier("Constant",constants.getIdentifier());
-		GenkidamaPacket packet = GenkidamaPacketFactory.packet(constants);
+
 		connection.sendPacket(packet);
 		
 		
 	}
 	
-	public void transmitInstruction(GenkidamaInstructionAbstract instruction) {
+	public void transmitInstruction(GenkidamaInstruction instruction) {
 	
 		remoteIdentifiers.addIdentifier("Instruction", instruction.getIdentifier());
 		
@@ -50,7 +44,7 @@ public class ComputeDevice {
 	
 	
 	
-	public void transmitFile(GenkidamaFileAbstract file) {
+	public void transmitFile(GenkidamaFile file) {
 		
 		remoteIdentifiers.addIdentifier("File", file.getIdentifier());
 		
@@ -59,7 +53,7 @@ public class ComputeDevice {
 
 	}
 	
-	public void transmitLibrary(GenkidamaLibraryAbstract lib) {
+	public void transmitLibrary(GenkidamaLibrary lib) {
 		
 		remoteIdentifiers.addIdentifier("Library", lib.getIdentifier());
 		
