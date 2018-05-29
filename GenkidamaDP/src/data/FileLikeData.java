@@ -1,4 +1,4 @@
-package transmitible.uploadAndStore;
+package data;
 
 import java.io.File;
 import java.io.IOException;

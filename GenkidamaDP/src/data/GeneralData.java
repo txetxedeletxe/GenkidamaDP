@@ -1,6 +1,6 @@
-package transmitible.uploadAndStore;
+package data;
 
-public abstract class GeneralData extends RemoteStoreable {
+public abstract class GeneralData extends GenkidamaData {
 
 	private byte[] primitiveData;
 	

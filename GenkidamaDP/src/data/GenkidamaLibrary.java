@@ -1,4 +1,4 @@
-package transmitible.uploadAndStore;
+package data;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +19,8 @@ public class GenkidamaLibrary extends FileLikeData{
 	
 
 	@Override
-	public StoreableType getGenkidamaStoreableType() {
-		return StoreableType.LIBRARY;
+	public final GenkidamaDataType getGenkidamaStoreableType() {
+		return GenkidamaDataType.LIBRARY;
 	}
 
 	

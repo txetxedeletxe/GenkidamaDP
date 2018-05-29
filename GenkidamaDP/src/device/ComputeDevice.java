@@ -1,11 +1,11 @@
 package device;
 
 
-import transmitible.order.ComputationKick;
-import transmitible.uploadAndStore.GenkidamaConstants;
-import transmitible.uploadAndStore.GenkidamaFile;
-import transmitible.uploadAndStore.GenkidamaInstruction;
-import transmitible.uploadAndStore.GenkidamaLibrary;
+import data.GenkidamaFile;
+import data.GenkidamaInstruction;
+import data.GenkidamaLibrary;
+import data.primitive.PrimitiveData;
+import sendable.order.ComputationKick;
 
 public class ComputeDevice {
 
@@ -24,11 +24,10 @@ public class ComputeDevice {
 		remoteIdentifiers = new RemoteIdentifiers(defaultIdentifierCategories);
 	}
 	
-	public void transmitConstants(GenkidamaConstants constants) {
+	public void transmitConstants(PrimitiveData constants) {
 		
 		remoteIdentifiers.addIdentifier("Constant",constants.getIdentifier());
-
-		connection.sendPacket(packet);
+		
 		
 		
 	}
@@ -36,8 +35,6 @@ public class ComputeDevice {
 	public void transmitInstruction(GenkidamaInstruction instruction) {
 	
 		remoteIdentifiers.addIdentifier("Instruction", instruction.getIdentifier());
-		
-		GenkidamaPacket packet =  GenkidamaPacketFactory.packet(instruction);
 		connection.sendPacket(packet);
 		
 	}

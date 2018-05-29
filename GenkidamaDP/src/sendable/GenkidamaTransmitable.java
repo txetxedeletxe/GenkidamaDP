@@ -1,8 +1,8 @@
-package transmitible;
+package sendable;
 
 import java.io.Serializable;
 
 public interface GenkidamaTransmitable extends Serializable{
 
-	public EventType getGenkidamaEventType();
+	
 }
