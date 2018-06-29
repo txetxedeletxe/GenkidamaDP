@@ -1,5 +1,6 @@
 package connect;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -33,7 +34,7 @@ public class GenkidamaConnection {
 					handler.handle(readPacket);
 						
 					
-				}catch (SocketException e) {
+				}catch (SocketException | EOFException e) {
 					return;
 				}
 				catch (IOException | ClassNotFoundException  e) {
@@ -47,8 +48,8 @@ public class GenkidamaConnection {
 	
 	private Thread connectionDaemon;
 	
-	public GenkidamaConnection(Socket socket, PacketHandler handler) {
-		this.handler = handler;
+	public GenkidamaConnection(Socket socket, PacketHandler packetHandler) {
+		this.handler = packetHandler;
 		this.socket = socket;
 		
 		

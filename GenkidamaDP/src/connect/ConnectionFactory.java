@@ -2,19 +2,21 @@ package connect;
 
 import java.net.Socket;
 
+import packet.PacketHandler;
+
 public abstract class ConnectionFactory {
 
-	private SocketHandler socketHandler;
+	private ConnectionSpec connectionSpec;
 	
-	public ConnectionFactory(SocketHandler socketHandler) {
+	public ConnectionFactory(ConnectionSpec connectionSpec) {
 		
-		this.socketHandler = socketHandler;
+		this.connectionSpec = connectionSpec;
 		
 	}
 	
 	public GenkidamaConnection connect(Socket socket) {
 		
-		return socketHandler.connect(socket);
+		return new GenkidamaConnection(socket, connectionSpec.getPacketHandler());
 		
 	}
 }

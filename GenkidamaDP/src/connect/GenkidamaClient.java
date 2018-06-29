@@ -6,8 +6,8 @@ import java.net.UnknownHostException;
 
 public class GenkidamaClient extends ConnectionFactory{
 
-	public GenkidamaClient(SocketHandler socketHandler) {
-		super(socketHandler);
+	public GenkidamaClient(ConnectionSpec connectionSpec) {
+		super(connectionSpec);
 		
 	}
 	

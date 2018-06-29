@@ -1,6 +1,8 @@
 package packet;
 
-public interface PacketHandler extends Demultiplexor<GenkidamaPacket>{
+import core.Handler;
+
+public interface PacketHandler extends Handler<GenkidamaPacket>{
 
 	
 }

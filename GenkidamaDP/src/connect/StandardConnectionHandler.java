@@ -12,10 +12,12 @@ public class StandardConnectionHandler implements ConnectionHandler{
 	}
 	
 	@Override
-	public void handleConnection(GenkidamaConnection genkidamaConnection) {
+	public void handle(GenkidamaConnection genkidamaConnection) {
 		connectionList.add(genkidamaConnection);
 		
 	}
+
+
 
 	
 }

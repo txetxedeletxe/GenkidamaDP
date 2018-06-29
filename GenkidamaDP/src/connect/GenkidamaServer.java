@@ -26,7 +26,7 @@ public class GenkidamaServer extends ConnectionFactory{
 				try {
 					Socket acceptedSocket = serverSocket.accept();
 					GenkidamaConnection genkidamaConnection = connect(acceptedSocket);
-					connectionHandler.handleConnection(genkidamaConnection);
+					connectionHandler.handle(genkidamaConnection);
 				} catch (SocketTimeoutException e) {}
 				catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -40,9 +40,9 @@ public class GenkidamaServer extends ConnectionFactory{
 		
 	};
 	
-	public GenkidamaServer(int port, ConnectionHandler connectionHandler , SocketHandler socketHandler) {
+	public GenkidamaServer(int port, ConnectionHandler connectionHandler , ConnectionSpec connectionSpec) {
 		
-		super(socketHandler);
+		super(connectionSpec);
 		
 		try {
 			this.serverSocket = new ServerSocket(port);
