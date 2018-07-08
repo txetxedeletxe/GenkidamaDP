@@ -2,7 +2,6 @@ package connect;
 
 import java.net.Socket;
 
-import packet.PacketHandler;
 
 public abstract class ConnectionFactory {
 

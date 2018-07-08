@@ -1,8 +1,7 @@
 package packet;
 
-import core.Handler;
+import utils.Handler;
 
 public interface PacketHandler extends Handler<GenkidamaPacket>{
 
-	
 }

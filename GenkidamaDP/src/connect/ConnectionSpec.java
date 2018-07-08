@@ -4,15 +4,15 @@ import packet.PacketHandler;
 
 public class ConnectionSpec {
 
-	private PacketHandler packetHandler;
+	private PacketHandlerFactory packetHandlerFactory;
 	
-	public ConnectionSpec(PacketHandler packetHandler) {
+	public ConnectionSpec(PacketHandlerFactory packetHandler) {
 		
-		this.packetHandler = packetHandler;
+		this.packetHandlerFactory = packetHandler;
 	}
 
 	public PacketHandler getPacketHandler() {
-		return this.packetHandler;
+		return this.packetHandlerFactory.construct();
 	}
 	
 }

@@ -2,6 +2,8 @@ package packet;
 
 import java.io.Serializable;
 
-public interface GenkidamaPacket extends Serializable{
+import utils.Discriminable;
+
+public interface GenkidamaPacket extends Serializable, Discriminable{
 
 }

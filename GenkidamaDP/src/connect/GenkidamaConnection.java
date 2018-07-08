@@ -93,4 +93,14 @@ public class GenkidamaConnection {
 		}
 	}
 	
+	public PacketHandler getPacketHandler() {
+		return handler;
+	}
+	
+	@Override
+	public int hashCode() {
+		
+		return ((Integer)((socket.getInetAddress().getHostAddress().hashCode())
+				+ ((Integer)socket.getPort()).hashCode())).hashCode();
+	}
 }

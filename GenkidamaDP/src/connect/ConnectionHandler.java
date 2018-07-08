@@ -1,6 +1,6 @@
 package connect;
 
-import core.Handler;
+import utils.Handler;
 
 public interface ConnectionHandler extends Handler<GenkidamaConnection> {
 
