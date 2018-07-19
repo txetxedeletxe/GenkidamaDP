@@ -1,6 +1,6 @@
 package device;
 
-import utils.OwnedObject;
+import interfaces.OwnedObject;
 
 public abstract class DeviceHostOwnedObject<T> extends OwnedObject<DeviceHostInterface,T> {
 

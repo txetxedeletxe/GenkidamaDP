@@ -1,9 +1,10 @@
 package device;
 
-import utils.Discriminable;
-import utils.GenkidamaRunnable;
+import data.ComputationResult;
+import interfaces.ClassDiscriminable;
+import interfaces.ControllerInterface;
 
-public interface DeviceHostInterface extends Discriminable {
+public interface DeviceHostInterface extends ClassDiscriminable, ControllerInterface{
 
-	public void getComputationResult(GenkidamaRunnable runnable);
+	public void getComputationResult(ComputationResult cr);
 }

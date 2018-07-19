@@ -1,41 +1,55 @@
 package device;
 
-import connect.ConnectionWrapper;
-import connect.GenkidamaConnection;
-import packet.CodePacket;
+import connection.ConnectionWrapper;
+import data.ComputationResult;
+import data.ComputationSpec;
+import interfaces.Demultiplexor;
+import interfaces.Handler;
+import packet.ComputationPacket;
 import packet.GenkidamaPacket;
-import packet.PacketHandler;
 import packet.ResultPacket;
-import utils.Demultiplexor;
-import utils.GenkidamaRunnable;
-import utils.Handler;
+import packet.SourcePacket;
 
 public class GenkidamaHostProxy extends ConnectionWrapper implements DeviceHostInterface{
  
 	
 	private HostDeviceInterface deviceInterface;
-	private GenkidamaConnection connection;
 	
 	private Demultiplexor<GenkidamaPacket> handler;
 	
-	private DeviceView deviceView;
+	private LocalDeviceView deviceView;
 	
 	private final Handler<GenkidamaPacket> codePacketHandler = new Handler<GenkidamaPacket>() {
 		
 		@Override
 		public void handle(GenkidamaPacket t) {
-			
-			String physicalName = deviceInterface.addCode(new CompilableCode(((CodePacket)t).getCode(), (DeviceHostInterface)GenkidamaHostProxy.this));
-			deviceView.addCodeIdentifier(((CodePacket)t).getIdentifier(),physicalName);
+			SourcePacket sp = (SourcePacket) t;
+			String physicalName = deviceInterface.addSource(new OwnedClassBody(sp.getCode(), (DeviceHostInterface)GenkidamaHostProxy.this));
+			deviceView.addCodeIdentifier(sp.getIdentifier(),physicalName);
 		}
 	};
 	
+	
+	private final Handler<GenkidamaPacket> computationPacketHandler = new Handler<GenkidamaPacket>() {
+
+		@Override
+		public void handle(GenkidamaPacket t) {
+			
+			ComputationPacket cp = (ComputationPacket) t;
+			ComputationSpec cs = new ComputationSpec(deviceView.getPhysicalCodeName(cp.getContent().getContent()), cp.getContent().getObjectId());
+			OwnedComputationSpec owcs = new OwnedComputationSpec(GenkidamaHostProxy.this, cs);
+			deviceInterface.kickComputation(owcs);
+			
+		}
+		
+	};
 	public GenkidamaHostProxy(HostDeviceInterface hostDeviceInterface) {
 		
 		this.deviceInterface = hostDeviceInterface;
 		handler = new Demultiplexor<GenkidamaPacket>();
-		handler.addHandler(CodePacket.serialVersionUID, codePacketHandler);
-		this.deviceView = new DeviceView();
+		handler.addHandler(SourcePacket.serialVersionUID, codePacketHandler);
+		handler.addHandler(ComputationPacket.serialVersionUID, computationPacketHandler);
+		this.deviceView = new LocalDeviceView();
 		
 	}
 	
@@ -55,14 +69,14 @@ public class GenkidamaHostProxy extends ConnectionWrapper implements DeviceHostI
 	
 
 	@Override
-	public long getId() {
+	public long getClassId() {
 		
 		return connection.hashCode();
-	}
+	} 
 
 	@Override
-	public void getComputationResult(GenkidamaRunnable runnable) {
-		
-		connection.sendPacket(new ResultPacket(runnable.getResult()));
+	public void getComputationResult(ComputationResult cr) {
+		ResultPacket rp = new ResultPacket(cr);
+		connection.sendPacket(rp);
 	}
 }

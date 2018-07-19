@@ -1,19 +1,24 @@
 package packet;
 
-import utils.Container;
 
-public class ResultPacket extends Container<Object> implements GenkidamaPacket {
+import data.ComputationResult;
+import interfaces.Container;
 
 
+public class ResultPacket extends Container<ComputationResult> implements GenkidamaPacket{
+
+	
 	public static final long serialVersionUID = -3486762253018481680L;
 
 	
-	public ResultPacket(Object result) {
+	public ResultPacket(ComputationResult result) {
 		super(result);
+		
+		
 	}
 	
 	@Override
-	public long getId() {
+	public long getClassId() {
 		// TODO Auto-generated method stub
 		return ResultPacket.serialVersionUID;
 	}

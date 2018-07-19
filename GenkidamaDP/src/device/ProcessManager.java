@@ -3,22 +3,27 @@ package device;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import utils.GenkidamaRunnable;
+import data.ComputationResult;
+import data.GenkidamaResultData;
+import interfaces.GenkidamaRunnable;
 
 public class ProcessManager {
 
 	private Thread[] activeThreads;
-	private Queue<ComputationSpecFinal> queueComputation;
+	private Queue<OwnedFinalComputationSpec> queueComputation;
 	private final Runnable activeRunnable = new Runnable() {
 		
 		@Override
 		public void run() {
 			
 			while (true) {
-				ComputationSpecFinal cs = getNextComputationSpec();
-				GenkidamaRunnable run = cs.getContent();
+				OwnedFinalComputationSpec cs;
+				while ((cs = getNextComputationSpec()) == null);
+				GenkidamaRunnable run = cs.getContent().getContent();
 				run.run();
-				cs.getOwner().getComputationResult(run);
+				GenkidamaResultData grd = run.getResult();
+				ComputationResult cr = new ComputationResult(grd,cs.getContent().getObjectId());
+				cs.getOwner().getComputationResult(cr);
 			}
 			
 			
@@ -41,13 +46,15 @@ public class ProcessManager {
 		}
 	}
 	
-	public void addComputation(ComputationSpecFinal computation) {
+	public void addComputation(OwnedFinalComputationSpec computation) {
 		queueComputation.add(computation);
 	}
 	
-	private synchronized ComputationSpecFinal getNextComputationSpec() {
+	private synchronized OwnedFinalComputationSpec getNextComputationSpec() {
 		
-		while (queueComputation.isEmpty()) {}
+		if (queueComputation.isEmpty())
+			return null;
+		
 		return queueComputation.poll();
 	}
 }

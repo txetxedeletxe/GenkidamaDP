@@ -1,14 +1,14 @@
 package device;
 
+import java.net.Socket;
 import java.net.UnknownHostException;
 
-import connect.ConnectionHandler;
-import connect.ConnectionSpec;
-import connect.GenkidamaClient;
-import connect.GenkidamaConnection;
-import connect.GenkidamaServer;
-import connect.PacketHandlerFactory;
-import packet.PacketHandler;
+import connection.GenkidamaConnection;
+import connection.PacketHandler;
+import connector.ConnectionBuilder;
+import connector.ConnectionHandler;
+import connector.GenkidamaClient;
+import connector.GenkidamaServer;
 
 public  class DeviceController implements ConnectionHandler, HostDeviceInterface, DeviceUI{
 
@@ -19,24 +19,43 @@ public  class DeviceController implements ConnectionHandler, HostDeviceInterface
 	private GenkidamaServer server;
 	private GenkidamaClient client;
 	
-	private final PacketHandlerFactory HOST_FACTORY = new PacketHandlerFactory() {
+	private final ConnectionBuilder CONNECTION_FACTORY = new ConnectionBuilder() {
+		
+		private Socket s;
 		
 		@Override
-		public PacketHandler construct() {
-		
-			return new GenkidamaHostProxy(DeviceController.this);
+		public GenkidamaConnection construct() {
+			
+			PacketHandler ph = new GenkidamaHostProxy(DeviceController.this);
+			
+			return new GenkidamaConnection(s, ph);
+			
+		}
+
+		@Override
+		public void setProperty(String propertyName, Object value) {
+			
+			if (propertyName.equals("socket")) {
+				s = (Socket) value;
+			}
+			
+		}
+
+		@Override
+		public void reset() {
+			
+			s = null;
 			
 		}
 	};
 	
-	private final ConnectionSpec CONNECTION_SPEC = new ConnectionSpec(HOST_FACTORY);
-	
 	public DeviceController() {
 		
 		processManager = new ProcessManager(4);
+		processManager.beginProcessing();
 		compilationManager = new CompilationManager();
 		hostManager = new HostManager();
-		client = new GenkidamaClient(CONNECTION_SPEC);
+		client = new GenkidamaClient(CONNECTION_FACTORY);
 		
 	}
 	
@@ -49,7 +68,7 @@ public  class DeviceController implements ConnectionHandler, HostDeviceInterface
 	}
 
 	@Override
-	public String addCode(CompilableCode code) {
+	public String addSource(OwnedClassBody code) {
 		
 		return compilationManager.addCode(code);
 	}
@@ -57,7 +76,7 @@ public  class DeviceController implements ConnectionHandler, HostDeviceInterface
 	@Override
 	public void startServer(int port) {
 		
-		this.server = new GenkidamaServer(port, this, CONNECTION_SPEC);
+		this.server = new GenkidamaServer(port, this, CONNECTION_FACTORY);
 		this.server.open();
 		
 	}
@@ -81,9 +100,9 @@ public  class DeviceController implements ConnectionHandler, HostDeviceInterface
 	}
 
 	@Override
-	public void kickComputation(ComputationSpec computationSpec) {
+	public void kickComputation(OwnedComputationSpec computationSpec) {
 		
-		ComputationSpecFinal csf = compilationManager.getCompiledObject(computationSpec);
+		OwnedFinalComputationSpec csf = compilationManager.getCompiledObject(computationSpec);
 		processManager.addComputation(csf);
 	}
 }
