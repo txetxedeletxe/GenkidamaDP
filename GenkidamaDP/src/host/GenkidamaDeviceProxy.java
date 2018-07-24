@@ -3,12 +3,12 @@ package host;
 import java.util.Random;
 
 import connection.ConnectionWrapper;
+import connection.GenkidamaPacket;
 import data.ComputationSpec;
 import data.UnnamedClassBody;
 import interfaces.Demultiplexor;
 import interfaces.Handler;
 import packet.ComputationPacket;
-import packet.GenkidamaPacket;
 import packet.ResultPacket;
 import packet.SourcePacket;
 
@@ -20,21 +20,19 @@ public class GenkidamaDeviceProxy extends ConnectionWrapper implements HostDevic
 	
 	private final Random random = new Random();
 	
-	private final Handler<GenkidamaPacket> resultHandler = new Handler<GenkidamaPacket>(){
+	private final Handler<ResultPacket> resultHandler = new Handler<ResultPacket>(){
 
 		@Override
-		public void handle(GenkidamaPacket t) {
+		public void handle(ResultPacket rs) {
 			
-			ResultPacket rs = (ResultPacket) t;
-			
-			remoteDeviceView.addResult(rs.getContent().getContent(),rs.getContent().getObjectId());
+			remoteDeviceView.addResult(rs.get().get(),rs.get().getId());
 		}
 			
 	};
 	
 	public GenkidamaDeviceProxy() {
 		demul = new Demultiplexor<>();
-		demul.addHandler(ResultPacket.serialVersionUID, resultHandler);
+		demul.addHandler(ResultPacket.class.getName(), resultHandler);
 		remoteDeviceView = new RemoteDeviceView();
 	}
 	

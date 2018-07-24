@@ -20,7 +20,7 @@ public class CompilationUtils {
 	private URLClassLoader urlClassLoader;
 	
 	private List<String> options;
-	private boolean debug;
+	private boolean debug = true;
 	
 	
 	public CompilationUtils(String compilationPath) {

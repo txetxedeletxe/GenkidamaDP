@@ -9,11 +9,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import packet.GenkidamaPacket;
+import interfaces.Handler;
 
 public class GenkidamaConnection {
 
-	private PacketHandler handler;
+	private Handler<GenkidamaPacket> handler;
 	private Socket socket;
 	
 	private ObjectInputStream ois;
@@ -47,7 +47,7 @@ public class GenkidamaConnection {
 	
 	private Thread connectionDaemon;
 	
-	public GenkidamaConnection(Socket socket, PacketHandler packetHandler) {
+	public GenkidamaConnection(Socket socket, Handler<GenkidamaPacket> packetHandler) {
 		this.handler = packetHandler;
 		this.socket = socket;
 		
@@ -92,7 +92,7 @@ public class GenkidamaConnection {
 		}
 	}
 	
-	public PacketHandler getPacketHandler() {
+	public Handler<GenkidamaPacket> getPacketHandler() {
 		return handler;
 	}
 	

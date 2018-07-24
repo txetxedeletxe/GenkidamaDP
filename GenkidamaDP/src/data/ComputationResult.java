@@ -1,9 +1,9 @@
 package data;
 
 import interfaces.Container;
-import interfaces.ObjectDiscriminable;
+import interfaces.Discriminable;
 
-public class ComputationResult extends Container<GenkidamaResultData> implements GenkidamaSpecializedData, ObjectDiscriminable{
+public class ComputationResult extends Container<GenkidamaResultData> implements GenkidamaSpecializedData, Discriminable{
 
 	private static final long serialVersionUID = 15039996969831098L;
 	long computationId ;
@@ -13,7 +13,7 @@ public class ComputationResult extends Container<GenkidamaResultData> implements
 	}
 
 	@Override
-	public long getObjectId() {
+	public long getId() {
 		// TODO Auto-generated method stub
 		return computationId;
 	}

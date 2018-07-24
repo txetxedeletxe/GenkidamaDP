@@ -1,4 +1,4 @@
-package interfaces;
+package source;
 
 import data.GenkidamaResultData;
 

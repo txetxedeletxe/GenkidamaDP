@@ -4,7 +4,7 @@ import compilation.CompilationUtils;
 import data.GenkidamaBasicData;
 import data.UnnamedClassBody;
 import data.UnnamedClassBodyFactory;
-import interfaces.GenkidamaRunnable;
+import source.GenkidamaRunnable;
 
 public class TestCompilationGenkidamaRunnable {
 
@@ -28,7 +28,7 @@ public class TestCompilationGenkidamaRunnable {
 			GenkidamaRunnable gr = (GenkidamaRunnable) clas.newInstance();
 			gr.run();
 			GenkidamaBasicData gbd =(GenkidamaBasicData)gr.getResult();
-			System.out.println(gbd.getContent());
+			System.out.println(gbd.get());
 		} catch (InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

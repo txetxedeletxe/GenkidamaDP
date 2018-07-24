@@ -1,5 +1,5 @@
 package interfaces;
 
-public interface ControllerInterface {
+public interface ControllerInterface extends Discriminable{
 
 }

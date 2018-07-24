@@ -1,6 +1,6 @@
 package interfaces;
 
-public abstract class OwnedObject<T1,T2> extends Container<T2>{
+public class OwnedObject<T1,T2> extends Container<T2>{
 
 	private T1 owner;
 	

@@ -1,10 +1,10 @@
 package data;
 
 import interfaces.Container;
-import interfaces.GenkidamaRunnable;
-import interfaces.ObjectDiscriminable;
+import interfaces.Discriminable;
+import source.GenkidamaRunnable;
 
-public class FinalComputationSpec extends Container<GenkidamaRunnable> implements GenkidamaData, ObjectDiscriminable{
+public class FinalComputationSpec extends Container<GenkidamaRunnable> implements GenkidamaData, Discriminable{
 
 	/**
 	 * 
@@ -22,7 +22,7 @@ public class FinalComputationSpec extends Container<GenkidamaRunnable> implement
 
 
 	@Override
-	public long getObjectId() {
+	public long getId() {
 		// TODO Auto-generated method stub
 		return computationId;
 	}

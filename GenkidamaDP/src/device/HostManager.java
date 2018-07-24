@@ -12,7 +12,7 @@ public class HostManager {
 	}
 	
 	public void addHost(DeviceHostInterface deviceHostInt) {
-		hostMap.put(deviceHostInt.getClassId(), deviceHostInt);
+		hostMap.put(deviceHostInt.getId() , deviceHostInt);
 	}
 
 	public DeviceHostInterface getHost(Long hostId) {

@@ -5,15 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import compilation.CompilationUtils;
+import data.ComputationSpec;
 import data.FinalComputationSpec;
-import interfaces.GenkidamaRunnable;
+import data.UnnamedClassBody;
+import source.GenkidamaRunnable;
 
 public class CompilationManager {
 
 	private final String COMPILATION_TEMP_DIR = "temp"+ File.pathSeparator+ "compilation";
 	private final File compilationFile;
 	
-	private Map<String,OwnedClass> compiledClasses;
+	private Map<String,DeviceHostOwnedObject<Class<?>>> compiledClasses;
 	
 	private final String classBaseName = "Genki";
 	private int nextClassId;
@@ -22,7 +24,7 @@ public class CompilationManager {
 	
 	public CompilationManager() {
 		
-		compiledClasses = new HashMap<String,OwnedClass>();
+		compiledClasses = new HashMap<String,DeviceHostOwnedObject<Class<?>>>();
 		flushDir();
 		nextClassId = 0;
 		compilationFile= new File(COMPILATION_TEMP_DIR);
@@ -47,24 +49,24 @@ public class CompilationManager {
 	}
 
 
-	public String addCode(OwnedClassBody code) {
+	public String addCode(DeviceHostOwnedObject<UnnamedClassBody> code) {
 		
 		String thisClass = classBaseName + nextClassId++;
-		String realCode = code.getContent().getSpecificClass(thisClass);
+		String realCode = code.get().getSpecificClass(thisClass);
 		Class<?> cclass =  compilationUtils.compileAndGet(realCode,thisClass);
-		OwnedClass compiled = new OwnedClass(cclass, code.getOwner());
+		DeviceHostOwnedObject<Class<?>> compiled = new DeviceHostOwnedObject<Class<?>>(code.getOwner(),cclass);
 		compiledClasses.put(thisClass, compiled);
 		return thisClass;
 	}
 
-	public OwnedFinalComputationSpec getCompiledObject(OwnedComputationSpec spec) {
+	public DeviceHostOwnedObject<FinalComputationSpec> getCompiledObject(DeviceHostOwnedObject<ComputationSpec> spec) {
 		
-		OwnedClass cc = compiledClasses.get(spec.getContent().getContent());
+		DeviceHostOwnedObject<Class<?>> cc = compiledClasses.get(spec.get().get());
 		
 		if (cc.getOwner() != spec.getOwner())
 			throw new RuntimeException("nope");
 		
-		Class<?> c = cc.getContent();
+		Class<?> c = cc.get();
 		Object o = null;
 		try {
 			o = c.newInstance();
@@ -73,8 +75,8 @@ public class CompilationManager {
 			e.printStackTrace();
 		}
 		GenkidamaRunnable gr = (GenkidamaRunnable)o;
-		FinalComputationSpec fcs = new FinalComputationSpec(gr, spec.getContent().getObjectId());
-		OwnedFinalComputationSpec csf = new OwnedFinalComputationSpec(fcs, spec.getOwner());
+		FinalComputationSpec fcs = new FinalComputationSpec(gr, spec.get().getId());
+		DeviceHostOwnedObject<FinalComputationSpec> csf = new DeviceHostOwnedObject<FinalComputationSpec>( spec.getOwner(),fcs);
 		
 		return csf;
 	}

@@ -14,7 +14,7 @@ public class UnnamedClassBody implements GenkidamaSpecializedData{
 	
 	private boolean isPublic;
 	
-	UnnamedClassBody(String[] importedLibraries, String[] implementedInterfaces, String extendedClass,
+	public UnnamedClassBody(String[] importedLibraries, String[] implementedInterfaces, String extendedClass,
 			String classBody,boolean isPublic  ) {
 		
 		this.importedLibraries = importedLibraries;

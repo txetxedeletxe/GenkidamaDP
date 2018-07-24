@@ -6,12 +6,14 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import connection.GenkidamaConnection;
+import interfaces.Factory;
+import interfaces.Handler;
 
 
 public class GenkidamaServer extends GenkidamaConnector{
 
 	private ServerSocket serverSocket;
-	private ConnectionHandler connectionHandler;
+	private Handler<GenkidamaConnection> connectionHandler;
 	
 	private Thread serverDaemon;
 	
@@ -42,7 +44,7 @@ public class GenkidamaServer extends GenkidamaConnector{
 		
 	};
 	
-	public GenkidamaServer(int port, ConnectionHandler connectionHandler , ConnectionBuilder connectionFactory) {
+	public GenkidamaServer(int port, Handler<GenkidamaConnection> connectionHandler , ConnectionFactory connectionFactory) {
 		
 		super(connectionFactory);
 		

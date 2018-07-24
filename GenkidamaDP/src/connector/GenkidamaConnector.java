@@ -7,9 +7,9 @@ import connection.GenkidamaConnection;
 
 public abstract class GenkidamaConnector {
 
-	private ConnectionBuilder connectionFactory;
+	private ConnectionFactory connectionFactory;
 	
-	public GenkidamaConnector(ConnectionBuilder connectionFactory) {
+	public GenkidamaConnector(ConnectionFactory connectionFactory) {
 		
 		this.connectionFactory = connectionFactory;
 		
@@ -17,10 +17,8 @@ public abstract class GenkidamaConnector {
 	
 	public GenkidamaConnection connect(Socket socket) {
 		
-		connectionFactory.setProperty("socket", socket);
-		GenkidamaConnection  connection = connectionFactory.construct();
-		connectionFactory.reset();
-		
+		connectionFactory.setSocket(socket);
+		GenkidamaConnection  connection = connectionFactory.construct();		
 		return connection;
 		
 		

@@ -2,7 +2,7 @@ package interfaces;
 
 import java.io.Serializable;
 
-public abstract class Container<T>implements Serializable {
+public class Container<T> implements Serializable {
 
 	/**
 	 * 
@@ -14,7 +14,7 @@ public abstract class Container<T>implements Serializable {
 		this.content = content;
 	}
 	
-	public T getContent() {
+	public T get() {
 		return content;
 	}
 }
