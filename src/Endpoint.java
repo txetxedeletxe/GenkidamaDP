@@ -8,17 +8,20 @@ import java.nio.ByteBuffer;
  * This class handles input and output streams and leverages the container level in the Genkidama protocol stack.
  * 
  */
-public class GenkidamaEndpoint implements Runnable{
+public class Endpoint implements Runnable{
 	
 	private InputStream is;
 	private OutputStream os;
 	
 	private Handler<byte[]> byteArrayHandler;
 	
+	// Polling preferences
 	private int pollingGap = 100;
 	private int pollingSize = 1024;
 	private int bufferSize = 1000000;
 	
+	// Running flag
+	private boolean listenerRun = false;
 	private boolean listenerRunning = false;
 	
 	/**
@@ -28,7 +31,7 @@ public class GenkidamaEndpoint implements Runnable{
 	 * @param is The input stream to receive incoming data
 	 * @param os The output stream to write outgoing data to
 	 */
-	public GenkidamaEndpoint(InputStream is, OutputStream os) {
+	public Endpoint(InputStream is, OutputStream os) {
 		
 		//Handler to null
 		this(is,os,null);
@@ -43,12 +46,21 @@ public class GenkidamaEndpoint implements Runnable{
 	 * @param os The output stream to write outgoing data to
 	 * @param byteArrayHandler Handler of byte arrays to send the incoming packets to 
 	 */
-	public GenkidamaEndpoint(InputStream is, OutputStream os, Handler<byte[]> byteArrayHandler) {
+	public Endpoint(InputStream is, OutputStream os, Handler<byte[]> byteArrayHandler) {
 		
 		this.is = is;
 		this.os = os;
 		
 		this.byteArrayHandler = byteArrayHandler;
+		
+	}
+	
+	/**
+	 * Sets the handler of byte arrays to the passed byteArrayHandler
+	 * 
+	 * @param byteArrayHandler a Handler of byte arrays
+	 */
+	public void setHandler(Handler<byte[]> byteArrayHandler) {
 		
 	}
 	
@@ -85,10 +97,10 @@ public class GenkidamaEndpoint implements Runnable{
 		int bufferedCount = 0;
 		
 		listenerRunning = true;
-		
+		listenerRun = true;
 		try {
 			
-			while (listenerRunning) {
+			while (listenerRun) {
 				
 				//Is there anything to read
 				if (is.available() == 0) {
@@ -121,7 +133,11 @@ public class GenkidamaEndpoint implements Runnable{
 					byte[] pack = new byte[nextPacketSize];
 					bbuffer.get(pack);
 					
-					byteArrayHandler.handle(pack);
+					try {
+						byteArrayHandler.handle(pack);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					
 					bufferedCount -= nextPacketSize;
 					nextPacketSize = -1;
@@ -146,19 +162,31 @@ public class GenkidamaEndpoint implements Runnable{
 			}
 		
 		} catch (InterruptedException | IOException e) {
-			// Leave loop
+			e.printStackTrace();
+			listenerRun = false;
+			
 		}
 		
+		listenerRunning = false;
 		
 	}
 	
 	/**
-	 * Stops the incoming packet listener if it is running
+	 * Stops the incoming packet listener if it is running and blocks till completely stopped
 	 */
 	public void stopListener() {
-		listenerRunning = false;
+		listenerRun = false;
+		// Block until stops running
+		while (listenerRunning);
+		
 	}
 	
+	/**
+	 * returns true if the listener is currently running, false if not
+	 */
+	public boolean isRunning() {
+		return listenerRunning;
+	}
 	
 	
 }
