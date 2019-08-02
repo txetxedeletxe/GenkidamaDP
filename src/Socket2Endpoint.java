@@ -11,7 +11,7 @@ public class Socket2Endpoint implements Handler<Socket> {
 	@Override
 	public void handle(Socket t) throws Exception {
 		
-		Endpoint se = new SocketEndpoint(t);
+		SocketEndpoint se = new SocketEndpoint(t);
 		endpointHandler.handle(se);
 		
 	}

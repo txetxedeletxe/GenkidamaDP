@@ -17,7 +17,7 @@ public class SocketEndpoint extends Endpoint{
 	
 	public void close() throws IOException {
 
-		stopListener();
+		super.close();
 		s.close();
 	}
 

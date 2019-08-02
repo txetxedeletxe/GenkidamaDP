@@ -8,20 +8,16 @@ import java.nio.ByteBuffer;
  * This class handles input and output streams and leverages the container level in the Genkidama protocol stack.
  * 
  */
-public class Endpoint implements Runnable{
+public class Endpoint extends RequestDaemon<byte[]>{
 	
 	private InputStream is;
 	private OutputStream os;
 	
-	private Handler<byte[]> byteArrayHandler;
-	
 	// Polling preferences
-	private int pollingGap = 100;
 	private int pollingSize = 1024;
 	private int bufferSize = 1000000;
 	
 	// Running flag
-	private boolean listenerRun = false;
 	private boolean listenerRunning = false;
 	
 	/**
@@ -47,20 +43,10 @@ public class Endpoint implements Runnable{
 	 * @param byteArrayHandler Handler of byte arrays to send the incoming packets to 
 	 */
 	public Endpoint(InputStream is, OutputStream os, Handler<byte[]> byteArrayHandler) {
+		super(byteArrayHandler);
 		
 		this.is = is;
 		this.os = os;
-		
-		this.byteArrayHandler = byteArrayHandler;
-		
-	}
-	
-	/**
-	 * Sets the handler of byte arrays to the passed byteArrayHandler
-	 * 
-	 * @param byteArrayHandler a Handler of byte arrays
-	 */
-	public void setHandler(Handler<byte[]> byteArrayHandler) {
 		
 	}
 	
@@ -89,7 +75,7 @@ public class Endpoint implements Runnable{
 	 */
 	@Override
 	public void run() {
-		
+		super.run();
 		byte[] barray = new byte[pollingSize];
 		ByteBuffer bbuffer = ByteBuffer.allocate(bufferSize);
 		
@@ -97,15 +83,14 @@ public class Endpoint implements Runnable{
 		int bufferedCount = 0;
 		
 		listenerRunning = true;
-		listenerRun = true;
 		try {
 			
-			while (listenerRun) {
+			while (super.isRunning()) {
 				
 				//Is there anything to read
 				if (is.available() == 0) {
 					
-						Thread.sleep(pollingGap);
+						Thread.sleep(getPollingGap());
 						continue;
 				}
 				
@@ -134,7 +119,7 @@ public class Endpoint implements Runnable{
 					bbuffer.get(pack);
 					
 					try {
-						byteArrayHandler.handle(pack);
+						getHandler().handle(pack);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -163,7 +148,7 @@ public class Endpoint implements Runnable{
 		
 		} catch (InterruptedException | IOException e) {
 			e.printStackTrace();
-			listenerRun = false;
+			super.stop();
 			
 		}
 		
@@ -172,21 +157,32 @@ public class Endpoint implements Runnable{
 	}
 	
 	/**
+	 * returns true if the listener is currently running, false if not
+	 */
+	@Override
+	public boolean isRunning() {
+		return listenerRunning;
+	}
+	
+	/**
 	 * Stops the incoming packet listener if it is running and blocks till completely stopped
 	 */
-	public void stopListener() {
-		listenerRun = false;
+	@Override
+	public void stop() {
+		super.stop();
 		// Block until stops running
 		while (listenerRunning);
 		
 	}
 	
-	/**
-	 * returns true if the listener is currently running, false if not
-	 */
-	public boolean isRunning() {
-		return listenerRunning;
+	public void close() throws IOException {
+		
+		stop();
+		
+		is.close();
+		os.close();
 	}
+	
 	
 	
 }
