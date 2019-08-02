@@ -1,14 +1,14 @@
-public abstract class RequestDaemon<T> implements Runnable{
+public abstract class RequestDaemon<T> extends Delegator<T> implements Runnable{
 
 	private int pollingGap = 100;
 	private boolean running = false;
 	
-	private Handler<T> handler;
+
 	
 	public RequestDaemon() {}
 	
 	public RequestDaemon(Handler<T> handler) {
-		this.handler = handler;
+		super(handler);
 	}
 	
 	public int getPollingGap() {
@@ -33,12 +33,6 @@ public abstract class RequestDaemon<T> implements Runnable{
 		running = true;
 	}
 	
-	public void setHandler(Handler<T> handler) {
-		this.handler = handler;
-	}
-	
-	public Handler<T> getHandler() {
-		return handler;
-	}
+
 
 }
