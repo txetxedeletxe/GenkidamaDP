@@ -1,6 +1,13 @@
 import command.Command;
+import types.Handler;
+import types.Pipe;
 
-public class CommandEndpoint extends Delegator<Command> implements Handler<byte[]>{
+/**
+ * Objects of this class wrap end-points so that they can be addressed at
+ * command level rather than binary
+ *
+ */
+public class CommandEndpoint extends Pipe<byte[],Command>{
 
 	private Endpoint endPoint;
 	
@@ -15,7 +22,6 @@ public class CommandEndpoint extends Delegator<Command> implements Handler<byte[
 		this.endPoint.setHandler(this);
 		
 	}
-	
 	
 	
 	@Override

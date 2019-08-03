@@ -1,9 +1,12 @@
+package types;
 
 public abstract class Delegator<T> {
 
 	private Handler<T> handler;
 	
-	public Delegator() {}
+	public Delegator() {
+		this(null);
+	}
 	
 	public Delegator(Handler<T> handler) {
 		this.handler = handler;

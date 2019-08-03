@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.net.Socket;
 
+import types.Handler;
+
 public class SocketEndpoint extends Endpoint{
 
 	private Socket s;

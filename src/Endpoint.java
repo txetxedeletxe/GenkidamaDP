@@ -3,6 +3,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import types.Handler;
+import types.RequestDaemon;
+
 /**
  * Objects of this class represent an end-point in a established session between instances that implement the Genkidama API.
  * This class handles input and output streams and leverages the container level in the Genkidama protocol stack.
@@ -21,22 +24,23 @@ public class Endpoint extends RequestDaemon<byte[]>{
 	private boolean listenerRunning = false;
 	
 	/**
-	 * Constructor of an endpoint without handler. Constructs an endpoint given the input and output streams to the other endpoint.
-	 * Since there is no handler defined the endpoint won't be able to pass incoming messages unless a handler is defined later.
+	 * Constructor of an end-point without handler. Constructs an end-point given the input and output streams to the other end-point.
+	 * Since there is no handler defined the end-point won't be able to pass incoming messages unless a handler is defined later.
 	 * 
 	 * @param is The input stream to receive incoming data
 	 * @param os The output stream to write outgoing data to
 	 */
 	public Endpoint(InputStream is, OutputStream os) {
+		super();
 		
-		//Handler to null
-		this(is,os,null);
+		this.is = is;
+		this.os = os;
 		
 	}
 	
 	/**
-	 * Constructor of an endpoint without handler. Constructs an endpoint given the input and output streams to the other endpoint.
-	 * Since there is no handler defined the endpoint won't be able to pass incoming messages unless a handler is defined later.
+	 * Constructor of an end-point without handler. Constructs an end-point given the input and output streams to the other end-point.
+	 * Since there is no handler defined the end-point won't be able to pass incoming messages unless a handler is defined later.
 	 * 
 	 * @param is The input stream to receive incoming data
 	 * @param os The output stream to write outgoing data to
@@ -175,6 +179,12 @@ public class Endpoint extends RequestDaemon<byte[]>{
 		
 	}
 	
+	/**
+	 * Stops the end-point if it is running and closes it out. Closing the end-point releases the attached resources
+	 * and invalidates the object.
+	 * 
+	 * @throws IOException is thrown if there is an IOException when closing the InputStream or the OutputStream
+	 */
 	public void close() throws IOException {
 		
 		stop();

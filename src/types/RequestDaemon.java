@@ -1,3 +1,4 @@
+package types;
 public abstract class RequestDaemon<T> extends Delegator<T> implements Runnable{
 
 	private int pollingGap = 100;
@@ -5,7 +6,9 @@ public abstract class RequestDaemon<T> extends Delegator<T> implements Runnable{
 	
 
 	
-	public RequestDaemon() {}
+	public RequestDaemon() {
+		this(null);
+	}
 	
 	public RequestDaemon(Handler<T> handler) {
 		super(handler);
