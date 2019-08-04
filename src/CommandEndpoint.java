@@ -12,7 +12,9 @@ public class CommandEndpoint extends Pipe<byte[],Command>{
 	private Endpoint endPoint;
 	
 	public CommandEndpoint(Endpoint endPoint) {
-		this(endPoint,null);
+		super();
+		
+		this.endPoint = endPoint;
 	}
 	
 	public CommandEndpoint(Endpoint endPoint, Handler<Command> commandHandler) {
@@ -23,10 +25,9 @@ public class CommandEndpoint extends Pipe<byte[],Command>{
 		
 	}
 	
-	
 	@Override
-	public void handle(byte[] t) throws Exception {
-		
+	public Command convert(byte[] a) throws Exception {
+		return super.convert(a);
 	}
 
 	

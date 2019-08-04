@@ -8,7 +8,9 @@ public class SocketEndpoint extends Endpoint{
 	private Socket s;
 	
 	public SocketEndpoint(Socket s) throws IOException {
-		this(s,null);
+		super(s.getInputStream(),s.getOutputStream());
+		
+		this.s = s;
 	}
 	
 	public SocketEndpoint(Socket s, Handler<byte[]> byteArrayHandler) throws IOException {
