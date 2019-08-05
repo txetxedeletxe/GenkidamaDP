@@ -1,3 +1,4 @@
+package endpoint;
 import command.Command;
 import types.Handler;
 import types.Pipe;

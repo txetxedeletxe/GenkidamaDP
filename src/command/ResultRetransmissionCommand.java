@@ -10,6 +10,12 @@ public abstract class ResultRetransmissionCommand extends ProtoCommand{
 		this.error = error;
 	}
 	
+	public ResultRetransmissionCommand(boolean error, short commandId) {
+		super(ProtoType.RESULT_RETRANSMISSION,commandId);
+		
+		this.error = error;
+	}
+	
 	public boolean isError() {
 		return error;
 	}

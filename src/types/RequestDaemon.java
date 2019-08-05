@@ -4,7 +4,6 @@ public abstract class RequestDaemon<T> extends Delegator<T> implements Runnable{
 	private int pollingGap = 100;
 	private boolean running = false;
 	
-
 	
 	public RequestDaemon() {
 		this(null);

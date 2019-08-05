@@ -9,6 +9,12 @@ public class ResultRetransmissionSuccessCommand extends ResultRetransmissionComm
 		
 		this.returnValue = returnValue;
 	}
+	
+	public ResultRetransmissionSuccessCommand(DynamicType returnValue, short commandId) {
+		super(false,commandId);
+		
+		this.returnValue = returnValue;
+	}
 
 	public DynamicType getResult() {
 		return returnValue;

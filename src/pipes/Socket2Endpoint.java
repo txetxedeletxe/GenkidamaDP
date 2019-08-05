@@ -1,6 +1,9 @@
+package pipes;
 import java.io.IOException;
 import java.net.Socket;
 
+import endpoint.Endpoint;
+import endpoint.SocketEndpoint;
 import types.Handler;
 import types.Pipe;
 

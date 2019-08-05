@@ -9,6 +9,12 @@ public class ResultRetransmissionErrorCommand extends ResultRetransmissionComman
 		
 		this.errorMessage = errorMessage;
 	}
+	
+	public ResultRetransmissionErrorCommand(String errorMessage, short commandId) {
+		super(true,commandId);
+		
+		this.errorMessage = errorMessage;
+	}
 
 	public String getErrorMessage() {
 		return errorMessage;
