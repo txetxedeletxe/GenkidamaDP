@@ -7,6 +7,16 @@ public class ComputationKickCommand extends ProtoCommand{
 	private short programId;
 	private List<DynamicType> parameters;
 	
+	public ComputationKickCommand() {
+		super(ProtoType.COMPUTATION_KICK);
+	}
+	
+	public ComputationKickCommand(short programId) {
+		super(ProtoType.COMPUTATION_KICK);
+		
+		this.programId = programId;
+	}
+	
 	public ComputationKickCommand(short programId, List<DynamicType> parameters) {
 		super(ProtoType.COMPUTATION_KICK);
 		
@@ -27,6 +37,14 @@ public class ComputationKickCommand extends ProtoCommand{
 	
 	public List<DynamicType> getParameters(){
 		return parameters;
+	}
+	
+	public void setProgamId(short programId) {
+		this.programId = programId;
+	}
+	
+	public void setParameters(List<DynamicType> parameters){
+		this.parameters = parameters;
 	}
 
 }

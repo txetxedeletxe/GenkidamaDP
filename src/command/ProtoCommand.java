@@ -30,5 +30,9 @@ public abstract class ProtoCommand extends Command{
 	public short getCommandId() {
 		return commandId;
 	}
+	
+	public void setCommandId(short commandId) {
+		this.commandId = commandId;
+	}
 
 }

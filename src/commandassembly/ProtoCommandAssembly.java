@@ -1,8 +1,6 @@
 package commandassembly;
 
 import java.nio.ByteBuffer;
-
-import command.Command;
 import command.MetaCommand;
 import command.ProtoCommand;
 import types.Assembly;
