@@ -13,7 +13,7 @@ public abstract class Pipe<A, B> extends Delegator<B> implements Handler<A>{
 	public void handle(A a) throws Exception {
 		
 		B b = convert(a);
-		getHandler().handle(b);
+		delegate(b);
 		
 	}
 	

@@ -124,7 +124,7 @@ public class Endpoint extends RequestDaemon<byte[]>{
 					bbuffer.get(pack);
 					
 					try {
-						getHandler().handle(pack);
+						delegate(pack);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

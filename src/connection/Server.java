@@ -78,7 +78,7 @@ public class Server extends RequestDaemon<Socket>{
 					Socket someConnection = sSocket.accept();
 					
 					try {
-						getHandler().handle(someConnection);
+						delegate(someConnection);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

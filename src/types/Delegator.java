@@ -20,4 +20,9 @@ public abstract class Delegator<T> {
 		return handler;
 	}
 	
+	protected void delegate(T t) throws Exception {
+		if (handler != null)
+			handler.handle(t);
+	}
+	
 }
