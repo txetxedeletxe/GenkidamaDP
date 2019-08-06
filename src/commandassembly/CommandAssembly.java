@@ -47,6 +47,7 @@ public class CommandAssembly implements Assembly<Command, byte[]> {
 			return protoAssembly.assemble(b2);
 		else
 			return metaAssembly.assemble(b2);
+		
 	}
 
 	
