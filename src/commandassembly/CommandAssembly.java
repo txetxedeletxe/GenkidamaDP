@@ -1,38 +1,54 @@
 package commandassembly;
 
-import java.nio.ByteBuffer;
+
+import java.util.Arrays;
 
 import command.Command;
 import command.MetaCommand;
 import command.ProtoCommand;
 import types.Assembly;
 
-public class CommandAssembly extends DispatchingAssembly<Command,ByteBuffer> {
+public class CommandAssembly implements Assembly<Command, byte[]> {
+	
+	private Assembly<ProtoCommand,byte[]> protoAssembly;
+	private Assembly<MetaCommand,byte[]> metaAssembly;
 	
 	public CommandAssembly(Assembly<ProtoCommand,byte[]> protoAssembly, Assembly<MetaCommand,byte[]> metaAssembly) {
 		
-		super(new Assembly[]{protoAssembly,metaAssembly});
-		
+		this.protoAssembly = protoAssembly;
+		this.metaAssembly = metaAssembly;
 	}
 	
-	public ByteBuffer disassemble(Command command) {
-		ByteBuffer bb2 = super.disassemble(command);
-		ByteBuffer bb = ByteBuffer.allocate(bb2.capacity());
+	public byte[] disassemble(Command command) {
 		
-		bb.put((byte)command.getRootType().ordinal());
-		bb.put(bb2);
+		byte rootType = (byte)command.getRootType().ordinal();
+		byte[] rest;
 		
-		return bb;
+		if (rootType == 0)
+			rest = protoAssembly.disassemble((ProtoCommand)command);
+		else
+			rest = metaAssembly.disassemble((MetaCommand)command);
+		
+		byte[] rest2 = new byte[rest.length + 1];
+		
+		rest2[0] = rootType;
+		for (int i = 0; i < rest.length ; i++)
+			rest2[i+1] = rest[i];
+		
+		return rest2;
 	}
 
 	@Override
-	public int dispatchB(ByteBuffer b) {
-		return b.get();
+	public Command assemble(byte[] b) {
+		
+		byte[] b2 = Arrays.copyOfRange(b, 1, b.length);
+		
+		if (b[0] == 0)
+			return protoAssembly.assemble(b2);
+		else
+			return metaAssembly.assemble(b2);
 	}
 
-	@Override
-	public int dispatchA(Command a) {
-		return a.getRootType().ordinal();
-	}
+	
 	
 }
