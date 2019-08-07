@@ -95,7 +95,5 @@ public class Server extends RequestDaemon<Socket>{
 		
 	}
 	
-	 
-	
 	
 }

@@ -4,6 +4,10 @@ public class ResultRetransmissionSuccessCommand extends ResultRetransmissionComm
 
 	private DynamicType returnValue;
 	
+	public ResultRetransmissionSuccessCommand() {
+		super(false);
+	}
+	
 	public ResultRetransmissionSuccessCommand(DynamicType returnValue) {
 		super(false);
 		
@@ -18,6 +22,10 @@ public class ResultRetransmissionSuccessCommand extends ResultRetransmissionComm
 
 	public DynamicType getResult() {
 		return returnValue;
+	}
+	
+	public void setResult(DynamicType returnValue) {
+		this.returnValue = returnValue;
 	}
 	
 }

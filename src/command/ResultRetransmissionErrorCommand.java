@@ -4,6 +4,10 @@ public class ResultRetransmissionErrorCommand extends ResultRetransmissionComman
 
 	private String errorMessage;
 	
+	public ResultRetransmissionErrorCommand() {
+		super(true);
+	}
+	
 	public ResultRetransmissionErrorCommand(String errorMessage) {
 		super(true);
 		
@@ -18,6 +22,10 @@ public class ResultRetransmissionErrorCommand extends ResultRetransmissionComman
 
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+	
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 	
 }

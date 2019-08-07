@@ -16,7 +16,7 @@ public abstract class ProtoCommand extends Command{
 		this.protoType = protoType;
 	}
 	
-	public ProtoCommand(ProtoType protoType,short commandId) {
+	public ProtoCommand(ProtoType protoType, short commandId) {
 		super(RootType.PROTO);
 		
 		this.commandId = commandId;
