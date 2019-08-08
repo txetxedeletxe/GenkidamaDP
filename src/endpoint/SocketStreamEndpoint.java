@@ -4,17 +4,17 @@ import java.net.Socket;
 
 import types.Handler;
 
-public class SocketEndpoint extends Endpoint{
+public class SocketStreamEndpoint extends StreamEndpoint{
 
 	private Socket s;
 	
-	public SocketEndpoint(Socket s) throws IOException {
+	public SocketStreamEndpoint(Socket s) throws IOException {
 		super(s.getInputStream(),s.getOutputStream());
 		
 		this.s = s;
 	}
 	
-	public SocketEndpoint(Socket s, Handler<byte[]> byteArrayHandler) throws IOException {
+	public SocketStreamEndpoint(Socket s, Handler<byte[]> byteArrayHandler) throws IOException {
 		super(s.getInputStream(),s.getOutputStream(),byteArrayHandler);
 		
 		this.s = s;

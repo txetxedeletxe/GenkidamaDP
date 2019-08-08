@@ -12,7 +12,7 @@ import types.RequestDaemon;
  * This class handles input and output streams and leverages the container level in the Genkidama protocol stack.
  * 
  */
-public class Endpoint extends RequestDaemon<byte[]>{
+public class StreamEndpoint extends RequestDaemon<byte[]>{
 	
 	private InputStream is;
 	private OutputStream os;
@@ -31,7 +31,7 @@ public class Endpoint extends RequestDaemon<byte[]>{
 	 * @param is The input stream to receive incoming data
 	 * @param os The output stream to write outgoing data to
 	 */
-	public Endpoint(InputStream is, OutputStream os) {
+	public StreamEndpoint(InputStream is, OutputStream os) {
 		super();
 		
 		this.is = is;
@@ -47,7 +47,7 @@ public class Endpoint extends RequestDaemon<byte[]>{
 	 * @param os The output stream to write outgoing data to
 	 * @param byteArrayHandler Handler of byte arrays to send the incoming packets to 
 	 */
-	public Endpoint(InputStream is, OutputStream os, Handler<byte[]> byteArrayHandler) {
+	public StreamEndpoint(InputStream is, OutputStream os, Handler<byte[]> byteArrayHandler) {
 		super(byteArrayHandler);
 		
 		this.is = is;
@@ -67,6 +67,7 @@ public class Endpoint extends RequestDaemon<byte[]>{
 		
 		bb.putInt(payload.length);
 		bb.put(payload);
+		bb.flip();
 		
 		byte[] totalLoad = new byte[payload.length + 4];
 		bb.get(totalLoad);
@@ -85,7 +86,6 @@ public class Endpoint extends RequestDaemon<byte[]>{
 		ByteBuffer bbuffer = ByteBuffer.allocate(bufferSize);
 		
 		int nextPacketSize = -1;
-		int bufferedCount = 0;
 		
 		listenerRunning = true;
 		try {
@@ -99,14 +99,17 @@ public class Endpoint extends RequestDaemon<byte[]>{
 						continue;
 				}
 				
-				int readLen = is.read(barray);
+				//Read from stream and put into buffer
+				is.read(barray);
 				bbuffer.put(barray);
-				bufferedCount += readLen;
+				
+				//Prepare buffer to read
+				bbuffer.flip();
 				
 				//Can we determine the length of the next packet
-				if (nextPacketSize == -1 && bufferedCount >= 4) {
+				if (nextPacketSize == -1 && bbuffer.remaining() >= 4) {
+					
 					nextPacketSize = bbuffer.getInt();
-					bufferedCount -= 4;
 					
 					// If we need more buffer for the next packet
 					if (nextPacketSize + pollingSize > bufferSize) {
@@ -114,13 +117,17 @@ public class Endpoint extends RequestDaemon<byte[]>{
 						ByteBuffer newBuffer = ByteBuffer.allocate(bufferSize);
 						newBuffer.put(bbuffer);
 						bbuffer = newBuffer;
+						bbuffer.flip();
 					}
 				}
 				
+				
+				
 				//While there is a packet to parse
-				while (nextPacketSize != -1 && bufferedCount >= nextPacketSize) {
+				while (nextPacketSize != -1 && bbuffer.remaining() >= nextPacketSize) {
 					
 					byte[] pack = new byte[nextPacketSize];
+					
 					bbuffer.get(pack);
 					
 					try {
@@ -129,13 +136,11 @@ public class Endpoint extends RequestDaemon<byte[]>{
 						e.printStackTrace();
 					}
 					
-					bufferedCount -= nextPacketSize;
 					nextPacketSize = -1;
 					
 					//Can we determine the length of the next packet
-					if (bufferedCount >= 4) {
+					if (bbuffer.remaining() >= 4) {
 						nextPacketSize = bbuffer.getInt();
-						bufferedCount -= 4;
 						
 						// If we need more buffer for the next packet
 						if (nextPacketSize + pollingSize > bufferSize) {
@@ -143,11 +148,13 @@ public class Endpoint extends RequestDaemon<byte[]>{
 							ByteBuffer newBuffer = ByteBuffer.allocate(bufferSize);
 							newBuffer.put(bbuffer);
 							bbuffer = newBuffer;
-							
+							bbuffer.flip();
 						}
 					}
 					
 				}
+				
+				bbuffer.compact();
 				
 			}
 		

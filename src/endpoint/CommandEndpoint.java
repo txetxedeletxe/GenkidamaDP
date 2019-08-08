@@ -10,15 +10,15 @@ import types.Pipe;
  */
 public class CommandEndpoint extends Pipe<byte[],Command>{
 
-	private Endpoint endPoint;
+	private StreamEndpoint endPoint;
 	
-	public CommandEndpoint(Endpoint endPoint) {
+	public CommandEndpoint(StreamEndpoint endPoint) {
 		super();
 		
 		this.endPoint = endPoint;
 	}
 	
-	public CommandEndpoint(Endpoint endPoint, Handler<Command> commandHandler) {
+	public CommandEndpoint(StreamEndpoint endPoint, Handler<Command> commandHandler) {
 		super(commandHandler);
 		
 		this.endPoint = endPoint;
