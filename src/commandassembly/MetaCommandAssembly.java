@@ -1,44 +1,43 @@
 package commandassembly;
 
-import java.nio.ByteBuffer;
 import command.MetaCommand;
 import types.Assembly;
 
 @SuppressWarnings({"rawtypes","unchecked"})
-public class MetaCommandAssembly implements Assembly<MetaCommand, ByteBuffer>{
+public class MetaCommandAssembly implements Assembly<MetaCommand, RawCommand>{
 
 	
 	private Assembly[] assemblers;
 	
-	public MetaCommandAssembly(Assembly<? extends MetaCommand,ByteBuffer>[] assemblers) {
+	public MetaCommandAssembly(Assembly<? extends MetaCommand,RawCommand>[] assemblers) {
 		this.assemblers = assemblers;
 	}
 	
 	@Override
-	public MetaCommand assemble(ByteBuffer bbuffer) {
+	public MetaCommand assemble(RawCommand rawCommand) {
 	
-		byte metaTypeByte = bbuffer.get();
+		byte[] header = rawCommand.getHeader(1);
+		rawCommand.removeHeader(1);
 		
-		MetaCommand mc = (MetaCommand)assemblers[metaTypeByte].assemble(bbuffer);
+		byte metaTypeByte = header[0];
+		
+		MetaCommand mc = (MetaCommand)assemblers[metaTypeByte].assemble(rawCommand);
 		
 		return mc;
 	}
 
 	@Override
-	public ByteBuffer disassemble(MetaCommand metaCommand) {
+	public RawCommand disassemble(MetaCommand metaCommand) {
 		
 		byte metaTypeByte = (byte)metaCommand.getMetaType().ordinal();
 		
-		ByteBuffer bb = (ByteBuffer)assemblers[metaTypeByte].disassemble(metaCommand);
+		RawCommand rawCommand = (RawCommand)assemblers[metaTypeByte].disassemble(metaCommand);
 		
-		ByteBuffer bb2 = ByteBuffer.allocate(bb.remaining() + 1);
+		byte[] header = new byte[]{metaTypeByte};
 		
-		bb2.put(metaTypeByte);
-		bb2.put(bb);
-		bb2.flip();
+		rawCommand.addHeader(header);
 		
-		return bb2;
-		
+		return rawCommand;
 		
 	}
 

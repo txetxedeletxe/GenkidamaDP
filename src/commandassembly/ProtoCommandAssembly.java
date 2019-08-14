@@ -5,44 +5,53 @@ import command.ProtoCommand;
 import types.Assembly;
 
 @SuppressWarnings({"rawtypes","unchecked"})
-public class ProtoCommandAssembly implements Assembly<ProtoCommand, ByteBuffer>{
+public class ProtoCommandAssembly implements Assembly<ProtoCommand, RawCommand>{
 
 	
 	private Assembly[] assemblers;
 	
-	public ProtoCommandAssembly(Assembly<? extends ProtoCommand,ByteBuffer>[] assemblers) {
+	public ProtoCommandAssembly(Assembly<? extends ProtoCommand,RawCommand>[] assemblers) {
 		this.assemblers = assemblers;
 	}
 	
 	@Override
-	public ProtoCommand assemble(ByteBuffer bbuffer) {
-	
+	public ProtoCommand assemble(RawCommand rawCommand) {
+		
+		byte[] header = rawCommand.getHeader(3);
+		rawCommand.removeHeader(3);
+		
+		ByteBuffer bbuffer = ByteBuffer.wrap(header); 
+		bbuffer.flip();
+		
 		short commandId = bbuffer.getShort();
 		byte protoTypeByte = bbuffer.get();
 		
 		
-		ProtoCommand pc = (ProtoCommand)assemblers[protoTypeByte].assemble(bbuffer);
+		ProtoCommand pc = (ProtoCommand)assemblers[protoTypeByte].assemble(rawCommand);
 		pc.setCommandId(commandId);
 		
 		return pc;
 	}
 
 	@Override
-	public ByteBuffer disassemble(ProtoCommand protoCommand) {
+	public RawCommand disassemble(ProtoCommand protoCommand) {
 		
 		short commandId = protoCommand.getCommandId();
 		byte protoTypeByte = (byte)protoCommand.getProtoType().ordinal();
 		
-		ByteBuffer bb = (ByteBuffer)assemblers[protoTypeByte].disassemble(protoCommand);
+		RawCommand rawCommand = (RawCommand)assemblers[protoTypeByte].disassemble(protoCommand);
 		
-		ByteBuffer bb2 = ByteBuffer.allocate(bb.remaining() + 3);
+		ByteBuffer bbuffer = ByteBuffer.allocate(3);
 		
-		bb2.putShort(commandId);
-		bb2.put(protoTypeByte);
-		bb2.put(bb);
-		bb2.flip();
+		bbuffer.putShort(commandId);
+		bbuffer.put(protoTypeByte);
+		bbuffer.flip();
 		
-		return bb2;
+		byte[] header = bbuffer.array();
+		
+		rawCommand.addHeader(header);
+		
+		return rawCommand;
 		
 		
 	}

@@ -1,57 +1,56 @@
 package commandassembly;
 
-import java.nio.ByteBuffer;
-
 import command.Command;
 import command.Command.RootType;
 import command.MetaCommand;
 import command.ProtoCommand;
 import types.Assembly;
 
-public class CommandAssembly implements Assembly<Command, ByteBuffer>{
+public class CommandAssembly implements Assembly<Command, RawCommand>{
 
-	private Assembly<ProtoCommand,ByteBuffer> protoAssembly;
-	private Assembly<MetaCommand,ByteBuffer> metaAssembly;
+	private Assembly<ProtoCommand,RawCommand> protoAssembly;
+	private Assembly<MetaCommand,RawCommand> metaAssembly;
 	
-	public CommandAssembly(Assembly<ProtoCommand,ByteBuffer> protoAssembly, Assembly<MetaCommand,ByteBuffer> metaAssembly) {
+	public CommandAssembly(Assembly<ProtoCommand,RawCommand> protoAssembly, Assembly<MetaCommand,RawCommand> metaAssembly) {
 		this.protoAssembly = protoAssembly;
 		this.metaAssembly = metaAssembly;
 	}
 	
 	@Override
-	public Command assemble(ByteBuffer bbuffer) {
+	public Command assemble(RawCommand rawCommand) {
 		
 		
-		byte rootTypeByte = bbuffer.get();
+		byte[] header = rawCommand.getHeader(1);
+		rawCommand.removeHeader(1);
 		
+		byte rootTypeByte = header[0];
+				
 		if (rootTypeByte == RootType.PROTO.ordinal())
-			return protoAssembly.assemble(bbuffer);
+			return protoAssembly.assemble(rawCommand);
 		else if (rootTypeByte == RootType.META.ordinal())
-			return metaAssembly.assemble(bbuffer);
+			return metaAssembly.assemble(rawCommand);
 		else 
 			throw new RuntimeException();
 		
 	}
 
 	@Override
-	public ByteBuffer disassemble(Command command) {
+	public RawCommand disassemble(Command command) {
 		
 		RootType rootType = command.getRootType();
-		ByteBuffer bb = null;
+		RawCommand rawCommand = null;
 		
 		if (rootType == RootType.PROTO)
-			bb = protoAssembly.disassemble((ProtoCommand)command);
+			rawCommand = protoAssembly.disassemble((ProtoCommand)command);
 		else
-			bb = metaAssembly.disassemble((MetaCommand)command);
+			rawCommand = metaAssembly.disassemble((MetaCommand)command);
 		
-		ByteBuffer bb2 = ByteBuffer.allocate(bb.remaining() + 1);
+		byte[] header = new byte[] {(byte)rootType.ordinal()};
 		
-		bb2.put((byte)rootType.ordinal());
-		bb2.put(bb);
-		bb2.flip();
+		rawCommand.addHeader(header);
 		
-		return bb2;
-			
+		return rawCommand;
+		
 	}
 
 }
