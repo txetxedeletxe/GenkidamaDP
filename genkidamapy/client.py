@@ -25,7 +25,6 @@ class Client(object):
         the_ppid = self.host.exec(source_str)
         return Request(self.host, the_ppid)
 
-    def close():
 
 class Request(object):
     def __init__(self, host, ppid):
