@@ -13,17 +13,18 @@ class Host(object):
 
         # Abstract this to HostState
         self.next_ppid = 0
-        self.results = {}
+        self.pipes = {}
 
-        # Abstract this to asynchronous
-        self.return_events = {}
 
     # Device Interface methods
     def exec(self, source_str):
         this_ppid = self.next_ppid
         self.next_ppid += 1
 
-        self.return_events[this_ppid] = threading.Event()
+        out_pipe = os.pipe()
+        in_pipe = os.pipe()
+
+        self.pipes[this_ppid] = dict(out_pipe=out_pipe, in_pipe=in_pipe)
         self.device_interface.exec(this_ppid, source_str)
 
         return this_ppid

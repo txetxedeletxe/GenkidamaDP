@@ -12,11 +12,11 @@ def fib(n):
     else:
         return fib(n-1) + fib(n-2)
 
-print(30)
+print(fib(30))
 """
 
 client = Client(address, connection_type="dummy")
 request = client.exec(fibonacci_calc)
-result = request.synchronize()
+output_stream = request.get_output_stream()
 
-print(result)
+client.stop()

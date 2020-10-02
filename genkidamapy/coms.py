@@ -4,9 +4,6 @@ import threading
 from select import select
 
 import genkidamapy.packet as packet
-# Constants
-PPID_BYTES = 2
-PACKET_LENGTH_BYTES = 4
 
 # Functions
 def connect(address, connection_type="TCP", **kwargs):
@@ -30,15 +27,17 @@ class Connection(object):
         self.socket = socket
         self.slicer = packet.ByteStreamSlicer()        
 
-    def recv(self):
+    def recv(self, timeout=None):
+        # TODO return different values in different events
+        # TODO add a global timer timeout
         while not self.slicer.has_slice():
-            r, _, _ = select([self.socket],[],[])
+            r, _, _ = select([self.socket],[],[], timeout=timeout)
             if not r:
-                return None
+                return None # Timeout has ocurred
 
             received = self.socket.recv(Connection.DEFAULT_RECV_BUFFERSIZE)
             if received is None:
-                return None
+                return None # Connection has terminated
             self.slicer.append_bytes(received)
 
 
@@ -53,26 +52,43 @@ class Connection(object):
         self.socket.close()
 
 class DummyConnection(object):
+    # TODO abstract some of these things to asynchronous
     def __init__(self):
         self.result_queue = []
         self.queue_lock = threading.Lock()
+        self.queue_not_empty_event = threading.Event()
 
-    def recv(self):
-        while True:
-            time.sleep(3)
-            if len(result_queue) != 0:
-                res = self.result_queue[0]
-                self.queue_lock.acquire()
-                self.result_queue = self.result_queue[1:]
-                self.queue_lock.release()
-                return res
+    def recv(self, timeout=None): # NOT thread-safe
+        # TODO add a global timer timeout
+        lock_timeout = timeout or -1
+
+        not_empty = self.queue_not_empty_event.wait(timeout=timeout)
+        if not not_empty:
+            return None # Timeout happened at queue wait
+
+        res = self.result_queue[0]
+        
+        acquired = self.queue_lock.acquire(timeout=lock_timeout)
+        if not acquired:
+            return None # Timeout happened at queue lock
+        
+        self.result_queue = self.result_queue[1:]
+        if len(self.result_queue) == 0:
+            self.queue_not_empty_event.clear()
+        
+        self.queue_lock.release()
+        
+        return res
             
 
-    def send(self,packet):
+    def send(self,packet): # Thread-safe
         ppid, exec_str = packet
         exec_res = exec(exec_str)
         self.queue_lock.acquire()
+
         self.result_queue.append((ppid, exec_res))
+        self.queue_not_empty_event.set()
+
         self.queue_lock.release()
 
 # Connector

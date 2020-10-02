@@ -1,3 +1,7 @@
+# Constants
+PPID_BYTES = 2
+PACKET_LENGTH_BYTES = 4
+
 # Functions
 def decode_packet(byte_array):
     ppid = int.from_bytes(byte_array[PACKET_LENGTH_BYTES:PACKET_LENGTH_BYTES+PPID_BYTES], byteorder="big", signed=False)
