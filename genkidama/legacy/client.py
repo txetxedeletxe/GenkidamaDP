@@ -1,7 +1,7 @@
-import genkidamapy.core as core
-import genkidamapy.coms as coms
-import genkidamapy.interface as interface
-import genkidamapy.asynchronous as asynchronous
+import .core as core
+import .coms as coms
+import .interface as interface
+import .asynchronous as asynchronous
 
 class Client(object):
     def __init__(self, 
